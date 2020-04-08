@@ -101,7 +101,7 @@ def compute_overlaps_masks(masks1, masks2):
     """Computes IoU overlaps between two sets of masks.
     masks1, masks2: [Height, Width, instances]
     """
-    
+
     # If either set of masks is empty return empty result
     if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
         return np.zeros((masks1.shape[-1], masks2.shape[-1]))
@@ -724,12 +724,28 @@ def compute_ap(gt_boxes, gt_class_ids, gt_masks,
     overlaps: [pred_boxes, gt_boxes] IoU overlaps.
     """
     # Get matches and overlaps
+    print("gt_boxes", gt_boxes)
+    print("pred_boxes", pred_boxes)
+    print("gt_class_ids", gt_class_ids)
+    print("pred_class_ids", pred_class_ids)
+
+    print("pred_scores", pred_scores)
+    print("pred_masks", pred_masks)
+
+
     gt_match, pred_match, overlaps = compute_matches(
         gt_boxes, gt_class_ids, gt_masks,
         pred_boxes, pred_class_ids, pred_scores, pred_masks,
         iou_threshold)
 
+    print("gt_match", gt_match)
+    print("pred_match", pred_match)
+    print("overlaps", overlaps)
     # Compute precision and recall at each prediction box step
+
+    print("pred_match > -1", np.where(predmatch > -1))
+    print("cumsum of pred_match > -1 : ", np.cumsum(pred_match > -1) )
+
     precisions = np.cumsum(pred_match > -1) / (np.arange(len(pred_match)) + 1)
     recalls = np.cumsum(pred_match > -1).astype(np.float32) / len(gt_match)
 
@@ -745,9 +761,10 @@ def compute_ap(gt_boxes, gt_class_ids, gt_masks,
 
     # Compute mean AP over recall range
     indices = np.where(recalls[:-1] != recalls[1:])[0] + 1
+    print("indices : index tiap recalls dari tiap object yg nilai true,", indices)
     mAP = np.sum((recalls[indices] - recalls[indices - 1]) *
                  precisions[indices])
-
+    print("mAP:", mAP)
     return mAP, precisions, recalls, overlaps
 
 
@@ -757,7 +774,7 @@ def compute_ap_range(gt_box, gt_class_id, gt_mask,
     """Compute AP over a range or IoU thresholds. Default range is 0.5-0.95."""
     # Default is 0.5 to 0.95 with increments of 0.05
     iou_thresholds = iou_thresholds or np.arange(0.5, 1.0, 0.05)
-    
+
     # Compute AP over range of IoU thresholds
     AP = []
     for iou_threshold in iou_thresholds:
