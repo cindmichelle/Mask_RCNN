@@ -769,9 +769,12 @@ def compute_ap(gt_boxes, gt_class_ids, gt_masks,
     for i in range(len(precisions) - 2, -1, -1):
         precisions[i] = np.maximum(precisions[i], precisions[i + 1])
 
+    print("precisions after loop : ", precisions)
     # Compute mean AP over recall range
     indices = np.where(recalls[:-1] != recalls[1:])[0] + 1
     print("indices", indices)
+
+    print("recalls[0 - 1]", recalls[0-1])
     mAP = np.sum((recalls[indices] - recalls[indices - 1]) *
                  precisions[indices])
     print("mAP : ", mAP)
