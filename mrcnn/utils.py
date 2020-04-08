@@ -730,7 +730,7 @@ def compute_ap(gt_boxes, gt_class_ids, gt_masks,
     print("pred_class_ids", pred_class_ids)
 
     print("pred_scores", pred_scores)
-    print("pred_masks", pred_masks)
+
 
 
     gt_match, pred_match, overlaps = compute_matches(
@@ -743,7 +743,7 @@ def compute_ap(gt_boxes, gt_class_ids, gt_masks,
     print("overlaps", overlaps)
     # Compute precision and recall at each prediction box step
 
-    print("pred_match > -1", np.where(predmatch > -1))
+    print("pred_match > -1", np.where(pred_match > -1))
     print("cumsum of pred_match > -1 : ", np.cumsum(pred_match > -1) )
 
     precisions = np.cumsum(pred_match > -1) / (np.arange(len(pred_match)) + 1)
